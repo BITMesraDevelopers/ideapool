@@ -1,0 +1,52 @@
+/* Body */
+
+body {
+	margin:0 auto;
+	width:80%;
+}
+
+/* Navigation Bar */
+
+ul.defaultnav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+.defaultnav li {
+    float: left;
+}
+.defaultnav li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+.defaultnav a:hover:not(.active) {
+    background-color: #111;
+}
+.active {
+	background-color:#4CAF50;
+}
+
+/* Project Blocks */
+
+ul.projectdefault {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+ul.projectdefault li {
+	border: 1px solid;
+	padding: 14px 16px;
+	margin: 14px 16px;
+}
+.projecttitle {
+	font-weight: bold;
+}
+.projectfeatures {
+	float:right;
+}

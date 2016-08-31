@@ -1,14 +1,38 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Ideapool</title>
-    <%= csrf_meta_tags %>
-
+		<% if @title.nil? %>
+		<title>IdeaPooool</title>
+		<% else %>
+		<title>IdeaPooool | <%= @title %></title>
+		<% end %>
+		<%= csrf_meta_tags %>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+		
+		<%= stylesheet_link_tag "style.css" %>
   </head>
 
   <body>
-    <%= yield %>
+		<div>
+			<% 
+				@links = {
+					"IdeaPool" => "#",
+					"Projects" => "/projects/index",
+					"Archive" => "/projects/archive",
+					"About" => "#"
+				}
+			%>
+			<ul class="defaultnav">
+				<% @links.each do |key, value| %>
+				<li><%= link_to key, value %>
+				<% end %>
+			</ul>
+		</div>
+		
+		<br><br>
+
+		<%= yield %>
+		
   </body>
 </html>

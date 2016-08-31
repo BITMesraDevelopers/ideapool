@@ -1,0 +1,19 @@
+<% if @projects.size > 0 %>
+<ul class="projectdefault">
+	<% @projects.each do |project| %>
+	<li>
+		<div class="projecttitle"><%= project.title %></div>
+		<br>
+		<div class="projectdescription"><%= project.description %></div>
+		<br>
+		<div class="projectfeatures">
+		Likes (<%= project.likes %>), 
+		Time Needed (<%= project.time_required %>), 
+		Status (<%= project.status %>)
+		</div>
+		<br>
+	<% end %>
+</ul>
+<% else %>
+No projects so far :(
+<% end %>
