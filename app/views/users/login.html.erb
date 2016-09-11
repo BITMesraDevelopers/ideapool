@@ -1,7 +1,7 @@
 <div class="jumbotron">
 	<%= form_for(@user, :url => {:action => "makesession"}, :html => {:class => "formdefault form-horizontal"}) do |f| %>
 		<fieldset>
-		<legend>Log In</legend>
+		<legend>Login using your DC credentials</legend>
 		<div class="form-group">
 			<label class="col-lg-1 control-label">Username</label>
 			<div class="col-lg-11">
@@ -21,4 +21,6 @@
 		<%= f.submit "Log in", :class => "buttondefault btn btn-primary" %>
 		</fieldset>
 	<% end %>
+	<br><br>
+	<p>If you haven't, please <a href="http://172.16.86.222/dchub/register" target="_blank">register on DC</a> first.</p>
 </div>

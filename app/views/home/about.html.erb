@@ -1,0 +1,19 @@
+<div class="jumbotron">
+	<h2>About</h2>
+	<p>
+		This website was made in Rails5. For any feedback, queries or suggestions, you can ping any of the following on DC -
+		<ul style="font-size:20px;">
+			<% @adminlist = {
+					"arch6" => " - website features and maintenance",
+					"bootstrap" => "",	
+					"direwolf" => "",
+					"anv13" => "",
+					"red_manc" => "",
+				 }
+			%>
+			<% @adminlist.each do |key, value| %>
+			<li><a target="_blank" href="http://172.16.86.222/dchub/users/<%= key %>"><%= key %></a><%= value %></li>
+			<% end %>
+		</ul>
+	</p>
+</div>
