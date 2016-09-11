@@ -1,19 +1,18 @@
+<% @title = "Archive" %>
 <% if @projects.size > 0 %>
-<ul class="projectdefault">
-	<% @projects.each do |project| %>
-	<li>
-		<div class="projecttitle"><%= project.title %></div>
-		<br>
-		<div class="projectdescription"><%= project.description %></div>
-		<br>
-		<div class="projectfeatures">
-		Likes (<%= project.likes %>), 
-		Time Needed (<%= project.time_required %>), 
-		Status (<%= project.status %>)
+<% @projects.each do |project| %>
+<div class="panel panel-default">
+	<div class="panel-body" style="padding-left:2%;padding-right:2%;padding-bottom:2%;">
+		<h3><%= link_to @project.title, "/projects/show/#{@project.id}" %></h3><br>
+		<%= @project.description %>
+		<br><br>
+		<div style="text-align:right;">			
+		Likes <span id="likes-<%= project.id %>" class="badge"><%= @project.likers.size %></span>
+		Comments <span class="badge"><%= @project.comments.size %></span>
 		</div>
-		<br>
-	<% end %>
-</ul>
+	</div>
+</div>
+<% end %>
 <% else %>
-No completed projects so far :(
+<div class="jumbotron">No completed projects so far :(</div>
 <% end %>

@@ -1,0 +1,45 @@
+<% logged_in_user = get_session_user %>
+<% if !logged_in_user or logged_in_user.level.to_s != "10" %>
+<div class="jumbotron">Are you allowed to view this page?</div>
+<% else %>
+<h1>Projects</h1><br>
+<% if @projects_unapproved.size > 0 %>
+<% @projects_unapproved.each do |project| %>
+<div class="panel panel-default">
+	<div class="panel-body" style="padding-left:2%;padding-right:2%;padding-bottom:2%;">
+		<h3><%= project.title %></h3><br>
+		<%= project.description %><br><br>
+		Time Needed => <%= project.time_required %> <br>
+		Status => <%= project.status %>
+		<br><br>
+		<div style="text-align:right;">
+			<a href="/projects/approve?id=<%= project.id %>&last=unapproved" class="btn btn-success">Approve</a>
+			<a href="/projects/destroyproject?id=<%= project.id %>&last=unapproved" class="btn btn-primary">Delete</a>
+		</div>
+	</div>
+</div>
+<% end %>
+<% else %>
+<h4>No projects.</h4>
+<% end %>
+
+<br><h1>Volunteers</h1><br>
+<% if @volunteers.size > 0 %>
+<% @volunteers.uniq.pluck(:project_id).each do |project_id| %>
+<div class="panel panel-default">
+	<div class="panel-heading"><%= Project.find_by_id(project_id).title %></div>
+	<div class="panel-body" style="padding-left:2%;padding-right:2%;padding-bottom:2%;">
+		<% @volunteers.where(:project_id => project_id).each do |volunteer| %>
+		<%= User.find_by_id(volunteer.user_id).username %>
+		<span style="float:right;">
+			<a href="/volunteers/approve/<%= volunteer.id %>" class="btn btn-success">Approve</a>
+			<a href="/volunteers/deny/<%= volunteer.id %>" class="btn btn-primary">Deny</a>
+		</span>
+		<% end %>
+	</div>
+</div>
+<% end %>
+<% else %>
+<h4>No volunteers.</h4>
+<% end %>
+<% end %>

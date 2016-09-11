@@ -10,29 +10,77 @@
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 		
-		<%= stylesheet_link_tag "style.css" %>
-  </head>
+		<%= stylesheet_link_tag "highlight.js/default.css" %>
+		<%= stylesheet_link_tag "simplex/bootstrap.min.css" %>
+		<%= stylesheet_link_tag "extra.css" %>
+		<script>hljs.initHighlightingOnLoad();</script>
 
-  <body>
-		<div>
-			<% 
-				@links = {
-					"IdeaPool" => "#",
-					"Projects" => "/projects/index",
-					"Archive" => "/projects/archive",
-					"About" => "#"
-				}
-			%>
-			<ul class="defaultnav">
-				<% @links.each do |key, value| %>
-				<li><%= link_to key, value %>
-				<% end %>
-			</ul>
+	</head>
+
+  <body style="padding-top:50px;">
+		<div class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<% 
+					@links = {
+						"Projects" => "/projects/show",
+						"Archive" => "/projects/archive",
+						"Sources" => "/sources/index",
+						#"About" => "#"
+					}
+				%>
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="/">IdeaPool</a>
+				</div>
+
+				<div class="collapse navbar-collapse" id="navbar-main">
+					<ul class="nav navbar-nav">
+						<% @links.each do |key, value| %>
+						<li <%= "class=active" if @title and @title == key %>><%= link_to sanitize(key), value %>
+						<% end %>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<% logged_in_user = get_session_user %>					
+						<% if logged_in_user %>
+						<% if logged_in_user.level.to_s == "10" %>
+						<li><%= link_to "Approve", "/projects/unapproved" %></li>
+						<% end %>
+						<li><%= link_to "(#{logged_in_user.username}) Logout", "/users/killsession" %>
+						<% else %>
+						<li><%= link_to "Login", "/users/login" %>
+						<% end %>
+					</ul>
+				</div>
+			</div>
 		</div>
 		
-		<br><br>
-
-		<%= yield %>
+		<div class="container">
+			<div class="row">
+				<% if flash[:notice] %>
+				<div class="alert alert-dismissible alert-warning">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<p><%= sanitize(flash[:notice]) %></p>
+				</div>
+				<% end %>
+			</div>
+			<div class="row">
+				<%= yield %>
+			</div>
+		</div>
 		
+		
+		<footer style="margin:3%;">
+			<div class="container">
+				<div class="row">
+					<center>&copy arch6, DC Admins (BIT Mesra)</center>
+				</div>
+			</div>
+		</footer>
   </body>
+	
 </html>

@@ -1,0 +1,9 @@
+<% if @content %>
+	<input action="action" class="btn btn-primary" type="button" value="Go Back" onclick="history.go(-1);" />
+	<br><br>
+	<pre><code><%= @content %></code></pre>
+<% else %>
+<div class="jumbotron">
+	<h1>Something went wrong :(</h1>
+</div>
+<% end %>

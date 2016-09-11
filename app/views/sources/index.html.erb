@@ -1,0 +1,19 @@
+<% if @orgrepos and @orgrepos.size > 0 %>
+<div class="jumbotron">
+	<h1>Repositories</h1>
+	<p>Based on <a href="https://github.com/BITMesraDevelopers" target="_blank"><%= image_tag "github.png", :size => "32" %></a></p>
+</div>
+<div class="list-group">
+	<% @orgrepos.each do |repo| %>
+  <a href="/github/view?name=<%= repo["name"] %>" class="list-group-item">
+    <h4 class="list-group-item-heading"><%= repo["name"] %></h4>
+    <p class="list-group-item-text"><%= repo["description"] %></p>
+  </a>
+	<% end %>
+</div>
+<% else %>
+<div class="jumbotron">
+	<h1>Sorry :(</h1>
+	<p>Either we cannot connect to the Git Service, or there are no repos.</p>
+</div>
+<% end %>

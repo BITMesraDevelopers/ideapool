@@ -1,0 +1,239 @@
+<% @title = "Projects" %>
+<% logged_in_user = get_session_user %>
+<% if @projects %>
+<% if @projects.size > 0 %>
+<% if logged_in_user %>
+<a href="/projects/create" class="btn btn-primary">
+	<% if logged_in_user.level.to_s == "10" %>
+	Create Project
+	<% else %>
+	Propose Project
+	<% end %>
+</a><br><br>
+<% end %>
+<% @projects.each do |project| %>
+<div class="panel panel-default">
+	<div class="panel-body" style="padding-left:2%;padding-right:2%;padding-bottom:2%;">
+		<h3><%= link_to project.title, "/projects/show/#{project.id}", :class => "projecttitle" %></h3><br>
+		<%= project.description %>
+		<br><br>
+		<% if logged_in_user and logged_in_user.level.to_s == "10" %>
+		<a href="/projects/destroyproject?id=<%= project.id %>&last=show" class="btn btn-primary">Delete</a>
+		<% end %>
+		<div style="text-align:right;">			
+		Likes <span id="likes-<%= project.id %>" class="badge"><%= project.likers.size %></span>
+		Comments <span class="badge"><%= project.comments.size %></span>
+		</div>
+	</div>
+</div>
+<% end %>
+<% else %>
+<div class="jumbotron">No projects so far :(</div>
+<% end %>
+<% elsif @project %>
+<div class="jumbotron">
+<div class="projecttitle"><h1><%= @project.title %></h1></div>
+<br>
+	<p>
+		<%= @project.description %><br><br>
+		Time Needed => <%= @project.time_required %> <br>
+		Status => <%= @project.status %>
+	</p>
+<br>
+<div class="projectfeatures">
+
+<% if logged_in_user %>
+<button class="btn btn-info buttonlike" id="like-<%= @project.id %>" data-id="<%= @project.id %>">
+<% if @project.likers.include?(logged_in_user) %>
+	Unlike
+<% else %>
+	Like
+<% end %>
+</button>
+<% end %>
+	
+<% if logged_in_user and !@project.member_users.include?(logged_in_user) %>
+<button class="btn btn-info buttonvolunteer" id="volunteer-<%= @project.id %>" data-id="<%= @project.id %>">
+<% if @project.volunteer_users.include?(logged_in_user) %>
+	Unvolunteer
+<% else %>
+	Volunteer
+<% end %>
+</button>
+<% end %>
+
+<% if logged_in_user and !@project.url and logged_in_user.level.to_s == "10" %>
+<a class="btn btn-info" href="/github/generaterepo?project_id=<%= @project.id %>">
+	Generate Repository
+</a>
+<% elsif @project.url %>
+<a href="<%= @project.url %>" target="_blank" class="btn btn-info">
+	View on Github
+</a>
+<a href="/github/view?name=<%= @project.title.split.join.downcase %>" class="btn btn-info">
+	View Source
+</a>
+<% end %>
+	
+	
+<div style="text-align:right;">
+Likes <span id="likes-<%= @project.id %>" class="badge"><%= @project.likers.size %></span>
+Comments <span class="badge"><%= @project.comments.size %></span>	
+</div>
+</div>
+
+</div>
+<% if @project.comments.size > 0 %>
+<% @project.comments.each do |comment| %>
+<% user_for_comment = User.find_by_id(comment.user_id) %>
+<% if !user_for_comment; next; end %>
+<br>
+<div class="commentdefault panel panel-default">
+	<div class="panel-heading"><%= user_for_comment.username %><%= " ("+comment.comment_type+")" if comment.comment_type != "General Comment" %></div>
+	<div class="panel-body">
+	<% if comment.comment_text.size > 0 %>
+	<%= comment.comment_text %><br><br>
+	<% end %>
+	<% comment.attachments.each do |attachment| %>
+	<%= link_to attachment.file_file_name, attachment.file.url %><br>
+	<% end %>
+	<div class="commentfeatures" style="text-align:right;">
+		<% if logged_in_user and logged_in_user.id == comment.user_id %>
+		(<%= link_to "delete", "/comments/delete/"+comment.id.to_s %>)
+		<% end %>
+	</div>
+	<br>
+	</div>
+</div>
+<% end %>
+<% end %>
+
+<br>
+<% if logged_in_user %>
+<h2>Comment</h2>
+<%= form_for(Comment.new, :url => {:controller => "comments", :action => "create"}, :html => {:class => "form-horizontal", :multipart => true}) do |f| %>
+<fieldset>
+
+<div class="form-group">
+	<div class="col-lg-6">
+	<%= f.select :comment_type, options_for_select(Array.new(COMMENT_TYPES.size) {|i| [COMMENT_TYPES[i], COMMENT_TYPES[i]]},
+																							 	 COMMENT_TYPES[COMMENT_TYPES_DEFAULT_INDEX]), {}, {:class => "form-control"} %>
+	</div>
+</div>
+	
+<% if flash[:content] %>
+<%= f.text_area :comment_text, :size => "200x10", :value => flash[:content], :class => "form-control" %><br><br>
+<% else %>
+<%= f.text_area :comment_text, :size => "200x10", :class => "form-control" %><br><br>
+<% end %>
+	
+<div class="input-group col-lg-6">
+	<label class="input-group-btn">
+		<span class="btn btn-info">
+			Browse&hellip; <%= file_field_tag "attachment_file", :style => "display:none;" %>
+		</span>
+	</label>
+	<input type="text" class="form-control" style="background:white;" readonly>
+</div>
+<br><br>	
+<%= submit_tag "Upload Chosen File", :class => "buttondefault btn btn-primary", :id => "upload-attachment", :type => "button" %>
+<%= f.submit "Comment", :class => "buttondefault btn btn-default" %>
+
+<input type="hidden" name="attachments_for_comment" id="attachments_for_comment" value="[]"/>
+<div id="message"></div>
+</fieldset>
+<% end %>
+
+<% end %>
+<% else %>
+<div class="jumbotron">Are you sure the url is correct??</div>
+<% end %>
+
+<script>			
+	$("#upload-attachment").click(function() {
+		var formData = new FormData();
+		formData.append('file', $('#attachment_file')[0].files[0]);
+		formData.append('comment_id', "9");
+		$.ajax({
+			type: 'POST',
+			url: '/attachments/upload',
+			data: formData,
+			async: false,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function(data, status, jqxhr) {
+				var messageDiv = document.getElementById('message');
+				var resp = JSON.parse(JSON.stringify(data));
+				if (resp["success"]) {
+					var newDiv = document.createElement('div');
+					newDiv.id = "attachment-"+resp["id"];
+					newDiv.dataset.id = resp["id"];
+					messageDiv.appendChild(newDiv);
+					var newDivUrl = document.createElement('a');
+					newDivUrl.href = resp["url"];
+					newDivUrl.text = resp["name"];
+					newDiv.appendChild(newDivUrl);
+					var newDivBtn = document.createElement('input');
+					newDivBtn.type = "button";
+					newDivBtn.className = "buttondefault";
+					newDivBtn.value = "delete";
+					newDivBtn.dataset.disableWith = "delete";
+					newDivBtn.onclick = function() {
+						$.ajax({
+							type: 'POST',
+							url: '/attachments/delete',
+							data: 'attachmentid='+this.parentNode.dataset.id.toString(),
+							async: false,
+							success: function(data, status, jqxhr) {
+								var resp_del = JSON.parse(JSON.stringify(data));
+								if (resp_del["success"]) {
+									$("#attachment-"+resp_del["id"]).remove();
+									var divHidden = document.getElementById('attachments_for_comment');
+									var divHiddenValue = JSON.parse(divHidden.value);
+									var i = divHiddenValue.indexOf(parseInt(resp_del["id"]));
+									if (i > 0) {
+										divHiddenValue.splice(i, 1);
+									}
+									divHidden.value = JSON.stringify(divHiddenValue);
+								}
+							}
+						});
+					}
+					newDiv.appendChild(newDivBtn);
+					var divHidden = document.getElementById('attachments_for_comment');
+					var divHiddenValue = JSON.parse(divHidden.value);
+					divHiddenValue.push(resp["id"]);
+					divHidden.value = JSON.stringify(divHiddenValue);
+				}
+			}
+		});
+	});
+	$(".buttonlike").click(function() {
+		$.ajax({
+			method: "GET",
+			url: "/likes/toggle/"+this.dataset.id.toString(),
+			async: false,
+			success: function(data, status, jqxhr) {
+				var resp = JSON.parse(JSON.stringify(data));
+				if (resp["success"]) {
+					$("#like-"+resp["id"]).html(resp["newtext"]);
+					$("#likes-"+resp["id"]).html(resp["newlikes"]);
+				}
+			}
+		});
+	});
+	$(".buttonvolunteer").click(function() {
+		$.ajax({
+			method: "GET",
+			url: "/volunteers/toggle/"+this.dataset.id.toString(),
+			async: false,
+			success: function(data, status, jqxhr) {
+				var resp = JSON.parse(JSON.stringify(data));
+				if (resp["success"]) {
+					$("#volunteer-"+resp["id"]).html(resp["newtext"]);
+				}
+			}
+		});
+	});	
+</script>

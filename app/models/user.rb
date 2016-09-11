@@ -1,4 +1,13 @@
 class User < ApplicationRecord
+	has_many :sessions
+	has_many :attachments
+	has_many :comments
+	has_many :likes
+	has_many :liked_projects, :source => :project, :through => :likes
+	has_many :volunteers
+	has_many :applied_projects, :source => :project, :through => :volunteers
+	has_many :members
+	has_many :projects_member_of, :source => :project, :through => :members
 	# before saving, encrypt password
 	before_save :encrypt_pass
 	# to generate the hash
@@ -6,15 +15,6 @@ class User < ApplicationRecord
 	# username requirements
 	validates_presence_of :username
 	validates_uniqueness_of :username
-	
-	def authenticate(username, password)
-		user = User.find_by_username(username)
-		if user and user.password == BCrypt::Engine.hash_secret(password, user.salt)
-			return user
-		else
-			return nil
-		end
-	end
 	
 	def encrypt_pass
 		if password.present?

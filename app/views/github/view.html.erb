@@ -1,0 +1,44 @@
+<% if @err %>
+<div class="jumbotron">
+	<% if @err.inspect.to_s.include?("409 Git Repository is empty.") %>
+	<h1>Repository is empty.</h1>
+	<% else %>
+	<h1>Something went wrong :(</h1>
+	<% end %>
+</div>
+<% elsif @repo_exists %>
+<div class="jumbotron">
+	<h2><%= @name %></h2>
+	<p><%= @description %></p>
+</div>
+<div class="container">
+	<div class="row">
+		<input action="action" class="btn btn-primary" type="button" value="Go Back" onclick="history.go(-1);" />
+		<a href="/github/view?name=<%= @name %>" class="btn btn-info">View Latest Tree</a><br><br>
+	</div>
+</div>
+<div class="panel panel-default">
+	<div class="panel-body">
+		<%= @latest_commit.message %>
+		<% committer = @latest_commit.committer %>
+		<span style="float:right;"><%= committer.name %> &lt;<%= committer.email %>&gt;</span>
+	</div>
+</div>
+<div class="panel panel-default">
+	<% @tree.each do |item| %>
+		<div class="panel-heading">
+		<% if item["type"] != "blob" %>
+			<% get_params = "view?name="+@name+"&sha="+item["sha"] %>
+			<a href="/github/<%= get_params %>" style="color:blue;"><%= item["path"] %></a>
+		<% else %>
+			<% get_params = "blob?name="+@name+"&sha="+item["sha"] %>
+			<a href="/github/<%= get_params %>" style="color:#2d2d2d;"><%= item["path"] %></a>
+		<% end %>
+		</div>
+	<% end %>
+</div>
+<% else %>
+<div class="jumbotron">
+	<h1>Are you sure that's a repo?</h1>
+</div>
+<% end %>
