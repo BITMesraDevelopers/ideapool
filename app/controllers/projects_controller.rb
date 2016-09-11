@@ -11,6 +11,8 @@ class ProjectsController < ApplicationController
 				@project.approved = true
 			end
 			@project.save
+			@project.reload
+			Member.create(:user_id => user.id, :project_id => @project.id)
 		rescue Exception => e
 			puts e.inspect
 			redirect_to "/projects/create", :notice => "Something went wrong :("
