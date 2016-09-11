@@ -1,7 +1,6 @@
 <% @title = "Projects" %>
 <% logged_in_user = get_session_user %>
 <% if @projects %>
-<% if @projects.size > 0 %>
 <% if logged_in_user %>
 <a href="/projects/create" class="btn btn-primary">
 	<% if logged_in_user.level.to_s == "10" %>
@@ -11,6 +10,7 @@
 	<% end %>
 </a><br><br>
 <% end %>
+<% if @projects.size > 0 %>
 <% @projects.each do |project| %>
 <div class="panel panel-default">
 	<div class="panel-body" style="padding-left:2%;padding-right:2%;padding-bottom:2%;">
