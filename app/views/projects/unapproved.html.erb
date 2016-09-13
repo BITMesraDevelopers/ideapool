@@ -1,5 +1,5 @@
 <% logged_in_user = get_session_user %>
-<% if !logged_in_user or logged_in_user.level.to_s != "10" %>
+<% if !(logged_in_user and logged_in_user.is_admin?) %>
 <div class="jumbotron">Are you allowed to view this page?</div>
 <% else %>
 <h1>Projects</h1><br>
@@ -12,8 +12,10 @@
 		Time Needed => <%= project.time_required %>
 		<br>
 		Status => <%= project.status %>
+		<% if project.owner %>
 		<br>
 		Owner => <%= project.owner.username %>
+		<% end %>
 		<br><br>
 		<div style="text-align:right;">
 			<a href="/projects/approve?id=<%= project.id %>&last=unapproved" class="btn btn-success">Approve</a>

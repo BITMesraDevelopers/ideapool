@@ -23,7 +23,11 @@ class UsersController < ApplicationController
 			}
 			raise "DC API Error: #{response["error"]}" if !(response["nick"] and response["level"])
 			if !User.find_by_username(username)
-				User.create(:username => username, :password => password, :level => response["level"].to_i)
+				u = User.create(:username => username, :password => password, :level => response["level"].to_i)
+				if response["level"].to_i == 10
+					u.is_admin = true
+					u.save
+				end
 			end
 		rescue Timeout::Error
 			timed_out = true

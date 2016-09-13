@@ -28,7 +28,7 @@ module ApplicationHelper
 		end
 		return @markdown.render(text).html_safe
 	end
-	
+		
 	def get_session_user
 		if !cookies[:__a] or !cookies[:__b]
 			return nil

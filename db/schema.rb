@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160913172536) do
+ActiveRecord::Schema.define(version: 20160913233215) do
 
   create_table "attachments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "comment_id"
@@ -70,12 +70,13 @@ ActiveRecord::Schema.define(version: 20160913172536) do
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.string   "username",               null: false
-    t.string   "password",               null: false
-    t.string   "salt",                   null: false
-    t.integer  "level",      default: 1, null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.string   "username",                   null: false
+    t.string   "password",                   null: false
+    t.string   "salt",                       null: false
+    t.integer  "level",      default: 1,     null: false
+    t.boolean  "is_admin",   default: false
   end
 
   create_table "volunteers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
