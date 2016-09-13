@@ -36,6 +36,11 @@ gem "paperclip", "~> 5.0.0"
 # Github API
 gem "github_api"
 
+# Markdown, Syntax, MathJax
+gem 'redcarpet'
+gem 'coderay'
+gem 'mathjax-rails'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 

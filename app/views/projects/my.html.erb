@@ -9,12 +9,12 @@
 	<div class="panel-body" style="padding-left:2%;padding-right:2%;padding-bottom:2%;">
 		<h3>
 		<% if project.approved %>
-		<%= link_to project.title, "/projects/show/#{project.id}", :class => "projecttitle" %>
+		<%= link_to sanitize(markdown(project.title)), "/projects/show/#{project.id}", :class => "projecttitle" %>
 		<% else %>
-		<%= project.title %>
+		<%= sanitize(markdown(project.title)) %>
 		<% end %>
 		</h3><br>
-		<%= project.description %><br><br>
+		<%= sanitize(markdown(project.description)) %><br><br>
 		Time Needed => <%= project.time_required %> <br>
 		Status => <%= project.status %>
 		<br><br>
@@ -30,6 +30,7 @@
 	
 	<% if project.members.size > 0  %>
 	<% project.members.each do |member| %>
+	<% if member.user_id == project.owner.id; next; end %>
 	<div class="panel-heading">
 		<%= User.find_by_id(member.user_id).username %>
 		<span style="float:right;">

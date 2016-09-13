@@ -1,4 +1,36 @@
 module ApplicationHelper
+	class CodeRayify < Redcarpet::Render::HTML
+		def block_code(code, language)
+			CodeRay.scan(code, language ? language : :plaintext).div
+		end
+	end
+	
+	def markdown(text)
+		if !@markdown
+			coderayified = CodeRayify.new(:filter_html => true, 
+                                :hard_wrap => true)
+			options = {
+				autolink:				 true,
+				filter_html:     true,
+				hard_wrap:       true, 
+				link_attributes: { rel: 'nofollow', target: "_blank" },
+				space_after_headers: true, 
+			}
+			extensions = {
+				fenced_code_blocks: true,
+				no_intra_emphasis: 	true,
+				autolink: 					true,
+				strikethrough: 			true,
+				lax_html_blocks: 		true,
+				superscript: 				false,
+				autolink:           true,
+				disable_indented_code_blocks: true
+			}
+			@markdown = Redcarpet::Markdown.new(coderayified, extensions)
+		end
+		return @markdown.render(text).html_safe
+	end
+	
 	def get_session_user
 		if !cookies[:__a] or !cookies[:__b]
 			return nil

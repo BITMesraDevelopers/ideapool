@@ -14,8 +14,8 @@
 <% @projects.each do |project| %>
 <div class="panel panel-default">
 	<div class="panel-body" style="padding-left:2%;padding-right:2%;padding-bottom:2%;">
-		<h3><%= link_to project.title, "/projects/show/#{project.id}", :class => "projecttitle" %></h3><br>
-		<%= project.description %>
+		<h3><%= link_to sanitize(markdown(project.title)), "/projects/show/#{project.id}", :class => "projecttitle" %></h3><br>
+		<%= sanitize(markdown(project.description)) %>
 		<br><br>
 		<% if logged_in_user and logged_in_user.level.to_s == "10" %>
 		<a href="/projects/destroyproject?id=<%= project.id %>&last=show" class="btn btn-primary">Delete</a>
@@ -32,10 +32,10 @@
 <% end %>
 <% elsif @project %>
 <div class="jumbotron">
-<div class="projecttitle"><h1><%= @project.title %></h1></div>
+<div class="projecttitle"><h1><%= sanitize(markdown(@project.title)) %></h1></div>
 <br>
 	<p>
-		<%= @project.description %><br><br>
+		<%= sanitize(markdown(@project.description)) %><br><br>
 		Time Needed => <%= @project.time_required %>
 	 	<br>
 		Status => <%= @project.status %>
