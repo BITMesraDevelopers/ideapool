@@ -153,13 +153,15 @@ Comments <span class="badge"><%= @project.comments.size %></span>
 		</span>
 	</label>
 	<input type="text" class="form-control" style="background:white;" readonly>
+	<span class="input-group-btn">
+		<%= submit_tag "Upload Chosen File", :class => "buttondefault btn btn-primary", :id => "upload-attachment", :type => "button" %>		
+	</span>
 </div>
-<br><br>	
-<%= submit_tag "Upload Chosen File", :class => "buttondefault btn btn-primary", :id => "upload-attachment", :type => "button" %>
+<br>
+<div id="message"></div><br>
 <%= f.submit "Comment", :class => "buttondefault btn btn-default" %>
 
 <input type="hidden" name="attachments_for_comment" id="attachments_for_comment" value="[]"/>
-<div id="message"></div>
 </fieldset>
 <% end %>
 
@@ -193,10 +195,11 @@ Comments <span class="badge"><%= @project.comments.size %></span>
 					newDivUrl.href = resp["url"];
 					newDivUrl.text = resp["name"];
 					newDiv.appendChild(newDivUrl);
-					var newDivBtn = document.createElement('input');
-					newDivBtn.type = "button";
+					newDiv.appendChild(document.createTextNode(" => "));
+					var newDivBtn = document.createElement('a');
+					newDivBtn.style.cursor = "pointer";
 					newDivBtn.className = "buttondefault";
-					newDivBtn.value = "delete";
+					newDivBtn.text = "delete";
 					newDivBtn.dataset.disableWith = "delete";
 					newDivBtn.onclick = function() {
 						$.ajax({
