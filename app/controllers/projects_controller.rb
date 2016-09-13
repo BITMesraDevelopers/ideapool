@@ -10,6 +10,7 @@ class ProjectsController < ApplicationController
 			if user.level.to_s == "10"
 				@project.approved = true
 			end
+			@project.owner = user
 			@project.save
 			@project.reload
 			Member.create(:user_id => user.id, :project_id => @project.id)
@@ -46,12 +47,25 @@ class ProjectsController < ApplicationController
 		end
 	end
 	
+	def my
+		# Show a non-admin's projects.
+		begin
+			user = view_context.get_session_user
+			@projects = Project.where(:owner => user)
+		rescue Exception => e
+			puts e.inspect
+		else
+		end
+	end
+	
 	def destroyproject
 		begin
 			user = view_context.get_session_user
-			if user and user.level.to_s == "10"
-				project = Project.find(params[:id])
+			project = Project.find(params[:id])
+			if user and (user.level.to_s == "10" or (project.owner == user and !project.approved))
 				project.delete
+			else
+				redirect_to "/projects/#{params[:last]}", :notice => "Delete failed :("	
 			end
 		rescue Exception => e
 			puts e.inspect

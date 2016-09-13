@@ -8,6 +8,7 @@ class User < ApplicationRecord
 	has_many :applied_projects, :source => :project, :through => :volunteers
 	has_many :members
 	has_many :projects_member_of, :source => :project, :through => :members
+	has_many :projects_owned, :class_name => "Project"
 	# before saving, encrypt password
 	before_save :encrypt_pass
 	# to generate the hash

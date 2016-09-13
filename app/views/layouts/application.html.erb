@@ -49,6 +49,8 @@
 						<% if logged_in_user %>
 						<% if logged_in_user.level.to_s == "10" %>
 						<li><%= link_to "Approve", "/projects/unapproved" %></li>
+						<% else %>
+						<li><%= link_to "Dashboard", "/projects/my" %></li>
 						<% end %>
 						<li><%= link_to "(#{logged_in_user.username}) Logout", "/users/killsession" %>
 						<% else %>
