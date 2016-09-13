@@ -22,3 +22,6 @@
 
 # Ignore attachments
 public/system/*
+
+# Ignore Gemfile.lock
+Gemfile.lock
