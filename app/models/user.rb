@@ -23,4 +23,8 @@ class User < ApplicationRecord
 			self.password = BCrypt::Engine.hash_secret(password, salt)
 		end
 	end
+	
+	def is_admin?
+		self.is_admin
+	end
 end

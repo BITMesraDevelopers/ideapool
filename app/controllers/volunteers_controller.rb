@@ -30,7 +30,7 @@ class VolunteersController < ApplicationController
 			user = view_context.get_session_user
 			volunteer = Volunteer.find(params[:id])
 			last = params[:last] ? params[:last] : "show"
-			if user and (user.level.to_s == "10" or Project.find(volunteer.project_id).owner == user)
+			if user and (user.is_admin? or Project.find(volunteer.project_id).owner == user)
 				member = Member.create(:project_id => volunteer.project_id, :user_id => volunteer.user_id)
 				volunteer.delete
 			end
@@ -47,7 +47,7 @@ class VolunteersController < ApplicationController
 			user = view_context.get_session_user
 			volunteer = Volunteer.find(params[:id])
 			last = params[:last] ? params[:last] : "show"
-			if user and (user.level.to_s == "10" or Project.find(volunteer.project_id).owner == user)
+			if user and (user.is_admin? or Project.find(volunteer.project_id).owner == user)
 				volunteer.delete
 			end
 		rescue Exception => e

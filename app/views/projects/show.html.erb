@@ -3,7 +3,7 @@
 <% if @projects %>
 <% if logged_in_user %>
 <a href="/projects/create" class="btn btn-primary">
-	<% if logged_in_user.level.to_s == "10" %>
+	<% if logged_in_user.is_admin? %>
 	Create Project
 	<% else %>
 	Propose Project
@@ -17,7 +17,7 @@
 		<h3><%= link_to sanitize(markdown(project.title)), "/projects/show/#{project.id}", :class => "projecttitle" %></h3><br>
 		<%= sanitize(markdown(project.description)) %>
 		<br><br>
-		<% if logged_in_user and logged_in_user.level.to_s == "10" %>
+		<% if logged_in_user and logged_in_user.is_admin? %>
 		<a href="/projects/destroyproject?id=<%= project.id %>&last=show" class="btn btn-primary">Delete</a>
 		<% end %>
 		<div style="text-align:right;">			
@@ -73,7 +73,7 @@
 <% end %>
 <% end %>
 
-<% if logged_in_user and !@project.url and logged_in_user.level.to_s == "10" %>
+<% if logged_in_user and !@project.url and logged_in_user.is_admin? %>
 <a class="btn btn-info" href="/github/generaterepo?project_id=<%= @project.id %>">
 	Generate Repository
 </a>
@@ -110,7 +110,7 @@ Comments <span class="badge"><%= @project.comments.size %></span>
 	<% nbsp_set = true %>
 	<span style="float:right;background:#bbb;" class="badge">Project Member</span>
 	<% end %>
-	<% if logged_in_user and (logged_in_user.id == comment.user_id or logged_in_user.level.to_s == "10" or @project.owner == logged_in_user) %>
+	<% if logged_in_user and (logged_in_user.id == comment.user_id or logged_in_user.is_admin? or @project.owner == logged_in_user) %>
 	<span style="float:right;"><%= link_to "delete", "/comments/delete/"+comment.id.to_s %><%= nbsp_set ? sanitize("&nbsp;&nbsp;&nbsp;") : "" %></span>
 	<% end %>
 	</div>

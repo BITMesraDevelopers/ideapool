@@ -7,7 +7,7 @@ class ProjectsController < ApplicationController
 		begin
 			user = view_context.get_session_user
 			@project = Project.new(params[:project].permit(:title, :description, :time_required, :status))
-			if user.level.to_s == "10"
+			if user.is_admin?
 				@project.approved = true
 			end
 			@project.owner = user
@@ -18,7 +18,7 @@ class ProjectsController < ApplicationController
 			puts e.inspect
 			redirect_to "/projects/create", :notice => "Something went wrong :("
 		else
-			if user.level.to_s == "10"
+			if user.is_admin?
 				redirect_to "/projects/show", :notice => "Created!"
 			else
 				redirect_to "/projects/show", :notice => "Submitted successfully, pending approval by an admin :)"
@@ -34,7 +34,7 @@ class ProjectsController < ApplicationController
 	def approve
 		begin
 			user = view_context.get_session_user
-			if user and user.level.to_s == "10"
+			if user and user.is_admin?
 				project = Project.find(params[:id])
 				project.approved = true
 				project.save
@@ -62,7 +62,7 @@ class ProjectsController < ApplicationController
 		begin
 			user = view_context.get_session_user
 			project = Project.find(params[:id])
-			if user and (user.level.to_s == "10" or (project.owner == user and !project.approved))
+			if user and (user.is_admin? or (project.owner == user and !project.approved))
 				project.delete
 			else
 				redirect_to "/projects/#{params[:last]}", :notice => "Delete failed :("	

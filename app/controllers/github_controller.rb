@@ -7,7 +7,7 @@ class GithubController < ApplicationController
 	def generaterepo
 		begin
 			user = view_context.get_session_user
-			if user.level.to_s == "10" and params[:project_id]
+			if user.is_admin? and params[:project_id]
 				@github.repos.create :name => Project.find_by_id(params[:project_id]).title.split.join.downcase, :org => GITHUB_ORGANIZATION
 				project = Project.find_by_id(params[:project_id])
 				project.url = "https://github.com/#{GITHUB_ORGANIZATION}/#{Project.find_by_id(params[:project_id]).title.split.join.downcase}"
