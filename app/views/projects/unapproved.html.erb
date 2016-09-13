@@ -9,8 +9,11 @@
 	<div class="panel-body" style="padding-left:2%;padding-right:2%;padding-bottom:2%;">
 		<h3><%= project.title %></h3><br>
 		<%= project.description %><br><br>
-		Time Needed => <%= project.time_required %> <br>
+		Time Needed => <%= project.time_required %>
+		<br>
 		Status => <%= project.status %>
+		<br>
+		Owner => <%= project.owner.username %>
 		<br><br>
 		<div style="text-align:right;">
 			<a href="/projects/approve?id=<%= project.id %>&last=unapproved" class="btn btn-success">Approve</a>
