@@ -17,6 +17,7 @@ class UsersController < ApplicationController
 		timed_out = false
 		begin
 			get_request = "http://"+DCHUB_URL+"?nick="+username+"&password="+password+"&secret="+DC_API_KEY
+			response = {}
 			Timeout.timeout(3) {
 				response = JSON.parse(Net::HTTP.get(URI(get_request)))
 			}
