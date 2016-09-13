@@ -32,8 +32,8 @@
 		<% @volunteers.where(:project_id => project_id).each do |volunteer| %>
 		<%= User.find_by_id(volunteer.user_id).username %>
 		<span style="float:right;">
-			<a href="/volunteers/approve/<%= volunteer.id %>" class="btn btn-success">Approve</a>
-			<a href="/volunteers/deny/<%= volunteer.id %>" class="btn btn-primary">Deny</a>
+			<a href="/volunteers/approve?id=<%= volunteer.id %>&last=unapproved" class="btn btn-success">Approve</a>
+			<a href="/volunteers/deny?id=<%= volunteer.id %>&last=unapproved" class="btn btn-primary">Deny</a>
 		</span>
 		<% end %>
 	</div>

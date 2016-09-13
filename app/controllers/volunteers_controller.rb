@@ -28,31 +28,33 @@ class VolunteersController < ApplicationController
 	def approve
 		begin
 			user = view_context.get_session_user
-			if user and user.level.to_s == "10"
-				volunteer = Volunteer.find(params[:id])
+			volunteer = Volunteer.find(params[:id])
+			last = params[:last] ? params[:last] : "show"
+			if user and (user.level.to_s == "10" or Project.find(volunteer.project_id).owner == user)
 				member = Member.create(:project_id => volunteer.project_id, :user_id => volunteer.user_id)
 				volunteer.delete
 			end
 		rescue Exception => e
 			puts e.inspect
-			redirect_to "/projects/unapproved", :notice => "Couldn't approve :("
+			redirect_to "/projects/#{last}", :notice => "Couldn't approve :("
 		else
-			redirect_to "/projects/unapproved", :notice => "Done."
+			redirect_to "/projects/#{last}", :notice => "Done."
 		end
 	end
 	
 	def deny
 		begin
 			user = view_context.get_session_user
-			if user and user.level.to_s == "10"
-				volunteer = Volunteer.find(params[:id])
+			volunteer = Volunteer.find(params[:id])
+			last = params[:last] ? params[:last] : "show"
+			if user and (user.level.to_s == "10" or Project.find(volunteer.project_id).owner == user)
 				volunteer.delete
 			end
 		rescue Exception => e
 			puts e.inspect
-			redirect_to "/projects/unapproved", :notice => "Couldn't deny :("
+			redirect_to "/projects/#{last}", :notice => "Couldn't deny :("
 		else
-			redirect_to "/projects/unapproved", :notice => "Done."
+			redirect_to "/projects/#{last}", :notice => "Done."
 		end
 	end
 end
