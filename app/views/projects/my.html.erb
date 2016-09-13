@@ -7,7 +7,13 @@
 <% @projects.each do |project| %>
 <div class="panel panel-default">
 	<div class="panel-body" style="padding-left:2%;padding-right:2%;padding-bottom:2%;">
-		<h3><%= project.title %></h3><br>
+		<h3>
+		<% if project.approved %>
+		<%= link_to project.title, "/projects/show/#{project.id}", :class => "projecttitle" %>
+		<% else %>
+		<%= project.title %>
+		<% end %>
+		</h3><br>
 		<%= project.description %><br><br>
 		Time Needed => <%= project.time_required %> <br>
 		Status => <%= project.status %>
@@ -15,12 +21,35 @@
 		<div style="text-align:right;">
 			<% if !project.approved %>
 			<a href="/projects/destroyproject?id=<%= project.id %>&last=my" class="btn btn-primary">Delete</a>
-			<a class="btn btn-danger">Waiting for approval</a>
+			<a class="btn btn-danger disabled">Waiting for approval</a>
 			<% else %>
-			<a class="btn btn-success">Approved</a>
+			<a class="btn btn-success disabled">Approved</a>
 			<% end %>
 		</div>
 	</div>
+	
+	<% if project.members.size > 0  %>
+	<% project.members.each do |member| %>
+	<div class="panel-heading">
+		<%= User.find_by_id(member.user_id).username %>
+		<span style="float:right;">
+			<a href="/members/revoke?id=<%= member.id %>&last=my">End membership</a>
+		</span>
+	</div>
+	<% end %>
+	<% end %>
+	
+	<% if project.volunteers.size > 0  %>
+	<% project.volunteers.each do |volunteer| %>
+	<div class="panel-heading">
+		<%= User.find_by_id(volunteer.user_id).username %>
+		<span style="float:right;">
+			<a href="/volunteers/approve?id=<%= volunteer.id %>&last=my" style="color:green;">Approve</a>&nbsp;&nbsp;&nbsp;
+			<a href="/volunteers/deny?id=<%= volunteer.id %>&last=my">Deny</a>
+		</span>
+	</div>
+	<% end %>
+	<% end %>
 </div>
 <% end %>
 <% else %>
