@@ -34,17 +34,17 @@ class ProjectsController < ApplicationController
 	def approve
 		begin
 			user = view_context.get_session_user
+			last = params["last"] ? params["last"] : "show"
 			if user and user.is_admin?
 				project = Project.find(params[:id])
 				project.approved = true
 				project.save
+				redirect_to "/projects/#{last}", :notice => "Approved."
 			end
 		rescue Exception => e
 			puts e.inspect
-			redirect_to "/projects/#{params[:last]}", :notice => "Approval failed :("
-		else
-			redirect_to "/projects/#{params[:last]}", :notice => "Approved."
 		end
+		redirect_to "/projects/#{last}", :notice => "Approval failed :("
 	end
 	
 	def my
@@ -62,17 +62,17 @@ class ProjectsController < ApplicationController
 		begin
 			user = view_context.get_session_user
 			project = Project.find(params[:id])
+			last = params["last"] ? params["last"] : "show"
 			if user and (user.is_admin? or (project.owner == user and !project.approved))
 				project.delete
+				redirect_to "/projects/#{last}", :notice => "Deleted."
 			else
-				redirect_to "/projects/#{params[:last]}", :notice => "Delete failed :("	
+				redirect_to "/projects/#{last}", :notice => "Delete failed :("	
 			end
 		rescue Exception => e
 			puts e.inspect
-			redirect_to "/projects/#{params[:last]}", :notice => "Delete failed :("
-		else
-			redirect_to "/projects/#{params[:last]}", :notice => "Deleted."
 		end
+		redirect_to "/projects/#{last}", :notice => "Delete failed :("
 	end
 	
 	def show
