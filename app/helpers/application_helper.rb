@@ -26,7 +26,10 @@ module ApplicationHelper
 			}
 			@markdown = Redcarpet::Markdown.new(@coderayified, extensions)
 		end
-		return @markdown.render(text).html_safe
+		text = @markdown.render(text).html_safe
+		return text
+#		return Regexp.new('^<p>(.*)<\/p>$').match(text)[1] rescue text
+#		return Regexp.new(/\A<p>(.*)<\/p>\Z/m).match(text)[1] rescue text	
 	end
 		
 	def get_session_user

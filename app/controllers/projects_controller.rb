@@ -75,11 +75,13 @@ class ProjectsController < ApplicationController
 				project.approved = true
 				project.save
 				redirect_to "/projects/#{last}", :notice => "Approved."
+			else
+				redirect_to "/projects/#{last}", :notice => "Approval failed :("
+
 			end
 		rescue Exception => e
 			puts e.inspect
 		end
-		redirect_to "/projects/#{last}", :notice => "Approval failed :("
 	end
 	
 	def my

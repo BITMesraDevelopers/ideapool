@@ -31,20 +31,18 @@
 <div class="jumbotron">No projects so far :(</div>
 <% end %>
 <% elsif @project %>
-<div class="jumbotron">
-<div class="projecttitle"><h1><%= sanitize(markdown(@project.title)) %></h1></div>
+<div class="well">
+<div class="projecttitle"><h1><%= @project.title %></h1></div>
 <br>
-	<p>
-		<%= sanitize(markdown(@project.description)) %><br><br>
-		Time Needed => <%= @project.time_required %>
-	 	<br>
-		Status => <%= @project.status %>
-		<% if @project.owner %>
-		<br>
-		Owner => <%= @project.owner.username %>
-		<% end %>
-	</p>
-<br>
+	<%= sanitize(markdown(@project.description)) %><br><br>
+	Time Needed => <%= @project.time_required %>
+	<br>
+	Status => <%= @project.status %>
+	<% if @project.owner %>
+	<br>
+	Owner => <%= @project.owner.username %>
+	<% end %>
+<br><br><br>
 <div class="projectfeatures">
 
 <% if logged_in_user %>
@@ -95,6 +93,7 @@ Comments <span class="badge"><%= @project.comments.size %></span>
 
 </div>
 <% if @project.comments.size > 0 %>
+<br><br><br><h1>Comments</h1>
 <% @project.comments.each do |comment| %>
 <% user_for_comment = User.find_by_id(comment.user_id) %>
 <% if !user_for_comment; next; end %>
@@ -116,7 +115,7 @@ Comments <span class="badge"><%= @project.comments.size %></span>
 	</div>
 	<div class="panel-body">
 	<% if comment.comment_text.size > 0 %>
-	<%= comment.comment_text %><br><br>
+	<%= sanitize(markdown(comment.comment_text)) %><br><br>
 	<% end %>
 	<% comment.attachments.each do |attachment| %>
 	<%= link_to attachment.file_file_name, attachment.file.url %><br>
@@ -129,7 +128,7 @@ Comments <span class="badge"><%= @project.comments.size %></span>
 
 <br>
 <% if logged_in_user %>
-<h2>Comment</h2>
+<h1>Write a comment</h1>
 <%= form_for(Comment.new, :url => {:controller => "comments", :action => "create"}, :html => {:class => "form-horizontal", :multipart => true}) do |f| %>
 <fieldset>
 
@@ -194,6 +193,7 @@ Comments <span class="badge"><%= @project.comments.size %></span>
 					var newDivUrl = document.createElement('a');
 					newDivUrl.href = resp["url"];
 					newDivUrl.text = resp["name"];
+					newDivUrl.target = "_blank";
 					newDiv.appendChild(newDivUrl);
 					newDiv.appendChild(document.createTextNode(" => "));
 					var newDivBtn = document.createElement('a');
