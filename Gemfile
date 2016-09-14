@@ -41,6 +41,9 @@ gem 'redcarpet'
 gem 'coderay'
 gem 'mathjax-rails'
 
+# Serve assets offline
+gem 'rack-offline'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
