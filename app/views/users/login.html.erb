@@ -1,3 +1,5 @@
+<% user = get_session_user %>
+<% if !user %>
 <div class="jumbotron">
 	<%= form_for(@user, :url => {:action => "makesession"}, :html => {:class => "formdefault form-horizontal"}) do |f| %>
 		<fieldset>
@@ -24,3 +26,6 @@
 	<br><br>
 	<p>If you haven't, please <a href="http://172.16.86.222/dchub/register" target="_blank">register on DC</a> first.</p>
 </div>
+<% else %>
+<div class="jumbotron"><p>You're already logged in :P</p></div>
+<% end %>
