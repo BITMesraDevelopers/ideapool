@@ -10,7 +10,7 @@ class User < ApplicationRecord
 	has_many :projects_member_of, :source => :project, :through => :members
 	has_many :projects_owned, :class_name => "Project"
 	# before saving, encrypt password
-	before_save :encrypt_pass
+	before_create :encrypt_pass
 	# to generate the hash
 	validates_presence_of :password, :on => :create
 	# username requirements
