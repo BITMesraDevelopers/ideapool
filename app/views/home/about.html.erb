@@ -9,11 +9,15 @@
 					"direwolf" => "",
 					"anv13" => "",
 					"red_manc" => "",
+					"dzj" => " - ACM stuff",
 				 }
 			%>
 			<% @adminlist.each do |key, value| %>
 			<li><a target="_blank" href="http://172.16.86.222/dchub/users/<%= key %>"><%= key %></a><%= value %></li>
 			<% end %>
 		</ul>
+		<p>
+		Also, please consider filing bugs on <%= link_to "Github", "https://github.com/#{GITHUB_ORGANIZATION}/ideapool/issues", :target => "_blank" %> itself. That makes it easier for <a target="_blank" href="http://172.16.86.222/dchub/users/arch6" target="_blank">me</a> to solve them.
+		</p>
 	</p>
 </div>
