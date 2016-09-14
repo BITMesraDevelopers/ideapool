@@ -3,6 +3,18 @@ class ProjectsController < ApplicationController
 		@project = Project.new
 	end
 	
+	def edit
+		begin
+			user = view_context.get_session_user
+			project = Project.find_by_id(params[:id])
+			if user and (user.is_admin? or (project and user == project.owner))
+				@project = project
+			end
+		rescue Exception => e
+			puts e.inspect
+		end
+	end
+	
 	def makeproject
 		begin
 			user = view_context.get_session_user
@@ -18,11 +30,34 @@ class ProjectsController < ApplicationController
 			puts e.inspect
 			redirect_to "/projects/create", :notice => "Something went wrong :("
 		else
-			if user.is_admin?
+			if user and user.is_admin?
 				redirect_to "/projects/show", :notice => "Created!"
 			else
 				redirect_to "/projects/show", :notice => "Submitted successfully, pending approval by an admin :)"
 			end
+		end
+	end
+
+	def saveproject
+		begin
+			user = view_context.get_session_user
+			project = Project.find(params["project_id"])
+			if user and (user.is_admin? or (project and user == project.owner))
+				last = user.is_admin ? "unapproved" : "my"
+				if project
+					project.title = params["project"]["title"]
+					project.description = params["project"]["description"]
+					project.time_required = params["project"]["time_required"]
+					project.status = params["project"]["status"]
+					project.save!
+					redirect_to "/projects/#{last}", :notice => "Saved!"
+				else
+					@project = Project.new(params[:project].permit(:title, :description, :time_required, :status))
+					redirect_to "/projects/edit/#{params["project_id"]}", :notice => "Could not be saved :("
+				end
+			end
+		rescue Exception => e
+			puts e.inspect
 		end
 	end
 	
@@ -71,8 +106,8 @@ class ProjectsController < ApplicationController
 			end
 		rescue Exception => e
 			puts e.inspect
+			redirect_to "/projects/#{last}", :notice => "Delete failed :("
 		end
-		redirect_to "/projects/#{last}", :notice => "Delete failed :("
 	end
 	
 	def show
