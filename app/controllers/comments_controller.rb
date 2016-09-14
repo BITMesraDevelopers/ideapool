@@ -32,18 +32,20 @@ class CommentsController < ApplicationController
 			if logged_in_user and params[:id]
 				req_comment = Comment.find(params[:id])
 				user_associated_id = req_comment.user.id
-				if user_associated_id == logged_in_user.id
+				if user_associated_id == logged_in_user.id or (req_comment.project and req_comment.project.owner == logged_in_user) or logged_in_user.is_admin?
 					req_comment.attachments.each do |attachment|
 						attachment.delete
 					end
 					req_comment.delete
+					redirect_to "/projects/show/"+flash[:project_id].to_s, :notice => "Comment deleted!!"
+				else
+					redirect_to "/projects/show/"+flash[:project_id].to_s, :notice => "Comment could not be deleted :( Do you have the permissions?"
 				end
 			end
 		rescue Exception => e
 			puts e
 			redirect_to "/projects/show/"+flash[:project_id].to_s, :notice => "Comment could not be deleted :( Do you have the permissions?"
-		else
-			redirect_to "/projects/show/"+flash[:project_id].to_s, :notice => "Comment deleted!!"
+
 		end
 	end
 end
