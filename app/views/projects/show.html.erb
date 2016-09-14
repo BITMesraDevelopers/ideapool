@@ -16,6 +16,10 @@
 	<div class="panel-body" style="padding-left:2%;padding-right:2%;padding-bottom:2%;">
 		<h3><%= link_to sanitize(markdown(project.title)), "/projects/show/#{project.id}", :class => "projecttitle" %></h3><br>
 		<%= sanitize(markdown(project.description)) %>
+		<% if project.owner %>
+		<br>
+		Owner => <%= project.owner.username %>
+		<% end %>
 		<br><br>
 		<% if logged_in_user and logged_in_user.is_admin? %>
 		<a href="/projects/destroyproject?id=<%= project.id %>&last=show" class="btn btn-primary">Delete</a>
