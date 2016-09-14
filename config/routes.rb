@@ -3,5 +3,6 @@ Rails.application.routes.draw do
 	root 'home#index'
   get ':controller(/:action(/:id(.:format)))'
   post ':controller(/:action(/:id(.:format)))'
+  patch ':controller(/:action(/:id(.:format)))'
 	mathjax 'mathjax'
 end

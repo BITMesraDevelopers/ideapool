@@ -7,8 +7,8 @@
 <% @projects_unapproved.each do |project| %>
 <div class="panel panel-default">
 	<div class="panel-body" style="padding-left:2%;padding-right:2%;padding-bottom:2%;">
-		<h3><%= project.title %></h3><br>
-		<%= project.description %><br><br>
+		<h3><%= sanitize(markdown(project.title)) %></h3><br>
+		<%= sanitize(markdown(project.description)) %><br><br>
 		Time Needed => <%= project.time_required %>
 		<br>
 		Status => <%= project.status %>
@@ -20,6 +20,7 @@
 		<div style="text-align:right;">
 			<a href="/projects/approve?id=<%= project.id %>&last=unapproved" class="btn btn-success">Approve</a>
 			<a href="/projects/destroyproject?id=<%= project.id %>&last=unapproved" class="btn btn-primary">Delete</a>
+			<a href="/projects/edit/<%= project.id %>" class="btn btn-primary">Edit</a>
 		</div>
 	</div>
 </div>
@@ -31,8 +32,10 @@
 <br><h1>Volunteers</h1><br>
 <% if @volunteers.size > 0 %>
 <% @volunteers.uniq.pluck(:project_id).each do |project_id| %>
+<% project = Project.find_by_id(project_id) %>
+<% if project %>
 <div class="panel panel-default">
-	<div class="panel-heading"><%= Project.find_by_id(project_id).title %></div>
+	<div class="panel-heading"><%= project.title %></div>
 	<div class="panel-body" style="padding-left:2%;padding-right:2%;padding-bottom:2%;">
 		<% @volunteers.where(:project_id => project_id).each do |volunteer| %>
 		<%= User.find_by_id(volunteer.user_id).username %>
@@ -43,6 +46,7 @@
 		<% end %>
 	</div>
 </div>
+<% end %>
 <% end %>
 <% else %>
 <h4>No volunteers.</h4>
